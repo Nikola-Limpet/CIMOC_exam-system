@@ -1,0 +1,73 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Exam Grading System Architecture
+
+## Project Overview
+This is a scalable exam grading system designed to:
+- Allow students to access exams using unique access keys provided by admins
+- Support time-blocked exams (exams available only during specific periods)
+- Store student submissions for manual grading by admins
+- Scale to handle 1,000-1,500 concurrent users during peak loads
+
+## Technology Stack
+- **Backend**: NestJS
+- **Database**: PostgreSQL with Drizzle ORM
+- **Caching**: Redis
+- **Frontend**: Next.js
+- **Authentication**: JWT
+
+## Project Structure (Monorepo)
+```
+project-root/
+├── frontend/                  # Next.js application
+│   ├── pages/                 # Pages (login, exam, admin dashboard)
+│   ├── components/            # Reusable components
+│   ├── lib/                   # API utilities (e.g., Axios wrappers)
+│   ├── public/                # Static assets
+│   ├── styles/                # CSS/SCSS files
+│   └── next.config.js         # Next.js configuration
+│
+├── backend/                   # NestJS application
+│   ├── src/
+│   │   ├── auth/              # Auth module (JWT, registration, login)
+│   │   ├── exam/              # Exam module (exam creation, scheduling)
+│   │   ├── access/            # Access module (key generation & validation)
+│   │   ├── submissions/       # Submissions module (answer handling)
+│   │   ├── grading/           # Grading module (admin grading actions)
+│   │   ├── database/          # Drizzle ORM and entity definitions
+│   │   ├── cache/             # Redis caching service
+│   │   ├── common/            # Guards, interceptors, filters, etc.
+│   │   └── main.ts            # Bootstraps the NestJS application
+```
+
+## Core Modules
+
+### Backend (NestJS)
+- **Auth Module**: Handles JWT authentication and role-based authorization
+- **Exam Module**: Manages exam creation, details, and time blocks
+- **Access Module**: Handles access key generation and validation
+- **Submissions Module**: Stores and manages student exam answers
+- **Grading Module**: Provides functionality for manual grading by admins
+- **Database Module**: Configures Drizzle ORM connection to PostgreSQL
+- **Cache Module**: Implements Redis caching for performance optimization
+
+### Frontend (Next.js)
+- **Login Page**: Authentication for students and admins
+- **Exam UI**: Interface for students to take exams
+- **Admin Dashboard**: For managing exams, access keys, and grading submissions
+
+## Key Workflows
+1. **Exam Access**: Students use admin-provided access keys to enter exams
+2. **Time Block Validation**: System checks if current time is within exam's allowed time blocks
+3. **Submission Handling**: Student answers are stored in PostgreSQL
+4. **Manual Grading**: Admins review and grade submissions through the admin interface
+
+## Scaling Considerations
+- Horizontal scaling with multiple NestJS instances
+- Redis caching to reduce database load
+- PostgreSQL optimization with proper indexing
+- Next.js SSR/SSG for frontend performance
