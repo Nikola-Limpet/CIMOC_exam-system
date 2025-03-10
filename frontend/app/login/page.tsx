@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label'; 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { authApi } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -13,12 +13,11 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Label } from '@radix-ui/react-dropdown-menu';
 
 // Define the validation schema using zod
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters')
+  password: z.string().min(2, 'Password must be at least 8 characters')
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -89,7 +88,7 @@ export default function Login() {
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="space-y-4">
               <div className="space-y-2">
-                {/* <Label htmlFor="email">Email</Label> */}
+                <Label htmlFor="email" className="block text-sm font-medium">Email</Label>
                 <Input 
                   id="email"
                   type="email" 
@@ -105,7 +104,7 @@ export default function Login() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  {/* <Labe htmlFor="password">Password</Labe> */}
+                  <Label htmlFor="password" className="block text-sm font-medium">Password</Label>
                   <Link 
                     href="/forgot-password" 
                     className="text-sm text-[#2D9C92] hover:underline"
