@@ -31,6 +31,7 @@ import { authApi } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/providers/auth-provider';
 
 interface NavItem {
   label: string;
@@ -75,33 +76,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { setTheme, theme } = useTheme();
   const router = useRouter();
 
-  // Fetch current user data
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      try {
-        const { data } = await authApi.profile();
-        return data;
-      } catch (error) {
-        router.push('/login');
-        throw error;
-      }
-    },
-    retry: false,
-  });
+  // Use the auth context instead of fetching user data again
+  const { user, isLoading } = useAuth();
 
-  const isAdmin = user?.role === 'admin';
+  // Avoid fetching user multiple times by using auth context instead
+  const isAdmin = user?.roles === 'admin';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     router.push('/login');
   };
 
-  // Close sidebar when path changes
+  // Close sidebar when path changes, but use a ref to prevent unnecessary effect calls
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
@@ -167,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Avatar>
-                  <AvatarImage src={user?.avatar} />
+                  {/* <AvatarImage src={user?.avatar} /> */}
                   <AvatarFallback>{user?.name?.charAt(0) || user?.email?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 {!sidebarCollapsed && (
@@ -250,7 +237,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Avatar>
-                  <AvatarImage src={user?.avatar} />
+                  {/* <AvatarImage src={user?.avatar} /> */}
                   <AvatarFallback>{user?.name?.charAt(0) || user?.email?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>

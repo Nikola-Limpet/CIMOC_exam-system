@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authApi as authApiModule } from "./api/auth"; // Import the dedicated auth module
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"; // Removed trailing slash
 
@@ -37,30 +38,21 @@ api.interceptors.response.use(
   }
 );
 
-// Auth APIs
-export const authApi = {
-  login: async (email: string, password: string) => {
-    return api.post("/auth/login", { email, password });
-  },
-  register: async (userData: { name: string; email: string; password: string }) => {
-    return api.post("/auth/register", userData);
-  },
-  profile: () =>
-    api.get("/auth/profile"),
-};
+// Export the auth API from the dedicated module
+export const authApi = authApiModule;
 
-// Exam APIs
+// Exam APIs - updated to use plural form
 export const examApi = {
   getAll: () =>
-    api.get("/exam"),
+    api.get("/exams"),
   getById: (id: string) =>
-    api.get(`/exam/${id}`),
+    api.get(`/exams/${id}`),
   create: (examData: any) =>
-    api.post("/exam", examData),
+    api.post("/exams", examData),
   update: (id: string, examData: any) =>
-    api.patch(`/exam/${id}`, examData),
+    api.patch(`/exams/${id}`, examData),
   delete: (id: string) =>
-    api.delete(`/exam/${id}`),
+    api.delete(`/exams/${id}`),
 };
 
 // Access Key APIs

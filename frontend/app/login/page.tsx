@@ -1,30 +1,25 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { AuthForm } from '@/components/auth/auth-form';
-import { authApi } from '@/lib/api';
+import { Suspense } from 'react';
+import { LoginForm } from '@/components/auth/login-form';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const router = useRouter();
+  // Debug message to verify this component is rendering correctly
+  console.log('Login page rendering');
 
-  const handleSubmit = async (values: any) => {
-    setIsLoading(true);
-    setError('');
+  return (
+    <Suspense fallback={<LoginSkeleton />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
 
-    try {
-      const response = await authApi.login(values.email, values.password);
-      localStorage.setItem('token', response.data.accessToken);
-      router.push('/dashboard');
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return <AuthForm mode="login" onSubmit={handleSubmit} error={error} isLoading={isLoading} />;
+function LoginSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-8 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-3/4 mx-auto" />
+    </div>
+  );
 }

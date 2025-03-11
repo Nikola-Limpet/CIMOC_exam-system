@@ -1,6 +1,7 @@
 import { api } from './api';
 
 interface User {
+  [x: string]: any;
   id: string;
   name: string;
   email: string;
@@ -8,11 +9,6 @@ interface User {
   avatar?: string;
   createdAt: string;
   updatedAt: string;
-}
-
-interface AuthResponse {
-  user: User;
-  token: string;
 }
 
 export interface LoginCredentials {
@@ -34,17 +30,19 @@ export interface ResetPasswordData {
 export const authApi = {
   // Get current user profile
   profile: () => {
+    console.log('Fetching user profile');
     return api.get<User>('/auth/me');
   },
 
   // Login with email and password
-  login: (credentials: LoginCredentials) => {
-    return api.post<AuthResponse>('/auth/login', credentials);
+  login: async (credentials: LoginCredentials) => {
+    console.log('Making login request with:', credentials.email);
+    return api.post('/auth/login', credentials);
   },
 
   // Register new user
   register: (data: RegisterData) => {
-    return api.post<AuthResponse>('/auth/register', data);
+    return api.post('/auth/register', data);
   },
 
   // Request password reset
