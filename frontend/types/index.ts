@@ -1,3 +1,5 @@
+import { RouteLoader } from "next/dist/client/route-loader";
+
 export interface TimeBlock {
   id: string;
   startTime: string;
@@ -30,7 +32,12 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'student' | 'admin';
+  roles: Role;
   createdAt: string;
   updatedAt: string;
+}
+
+export enum Role {
+  STUDENT = 'student',
+  ADMIN = 'admin'
 }

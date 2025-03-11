@@ -1,4 +1,7 @@
-import { IsNotEmpty, IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty, IsString, IsOptional, IsArray, ValidateNested,
+  IsEnum, IsNumber, IsDateString
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { TimeBlockDto } from './time-block.dto';
 import { QuestionDto } from './question.dto';
@@ -11,6 +14,22 @@ export class CreateExamDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsNumber()
+  duration?: number;
+
+  @IsOptional()
+  @IsDateString()
+  availableFrom?: string;
+
+  @IsOptional()
+  @IsDateString()
+  availableTo?: string;
+
+  @IsOptional()
+  @IsEnum(['draft', 'published', 'archived'])
+  status?: 'draft' | 'published' | 'archived';
 
   @IsOptional()
   @IsArray()

@@ -81,13 +81,17 @@ export class AuthService {
   private async generateTokens(user: any) {
     const payload = { email: user.email, sub: user.id, roles: user.roles };
 
+    // Get JWT expiration times from config with defaults
+    const accessTokenExpiration = this.configService.get('JWT_EXPIRATION', '24h');
+    const refreshTokenExpiration = this.configService.get('REFRESH_TOKEN_EXPIRATION', '7d');
+
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('JWT_EXPIRATION', '1h'),
+      expiresIn: accessTokenExpiration,
       secret: this.configService.get('JWT_SECRET'),
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRATION', '7d'),
+      expiresIn: refreshTokenExpiration,
       secret: this.configService.get('JWT_SECRET'),
     });
 

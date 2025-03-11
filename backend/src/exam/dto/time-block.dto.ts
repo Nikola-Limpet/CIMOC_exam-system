@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsOptional, IsNumber } from 'class-validator';
 
 export class TimeBlockDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class TimeBlockDto {
   @IsNotEmpty()
   @IsDateString()
   endTime: string;
+
+  @IsOptional()
+  @IsNumber()
+  duration?: number;
 }

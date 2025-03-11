@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { ExamService } from '../exam/exam.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { RedisService } from '../cache/redis.service';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class SubmissionsService {
@@ -46,6 +47,11 @@ export class SubmissionsService {
   }
 
   async getSubmission(id: string) {
+    // Check if the ID is a valid UUID before querying the database
+    if (!isUUID(id)) {
+      throw new BadRequestException(`Invalid submission ID format: ${id}`);
+    }
+
     // Try to get from cache first
     const cachedSubmission = await this.redisService.get(`${this.SUBMISSION_CACHE_PREFIX}${id}`);
     if (cachedSubmission) {

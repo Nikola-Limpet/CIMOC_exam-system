@@ -1,4 +1,4 @@
-import { pgTable, uuid, timestamp, foreignKey } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, timestamp, foreignKey, integer } from 'drizzle-orm/pg-core';
 import { exams } from './exams';
 
 export const timeBlocks = pgTable('time_blocks', {
@@ -6,6 +6,7 @@ export const timeBlocks = pgTable('time_blocks', {
   examId: uuid('exam_id').references(() => exams.id, { onDelete: 'cascade' }),
   startTime: timestamp('start_time').notNull(),
   endTime: timestamp('end_time').notNull(),
+  duration: integer('duration'), // Added duration field
   createdAt: timestamp('created_at').defaultNow(),
 });
 

@@ -3,4 +3,5 @@ export interface TimeBlock {
   examId: string;
   startTime: Date;
   endTime: Date;
+  duration?: number; // Added duration field
 }

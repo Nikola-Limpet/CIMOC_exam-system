@@ -50,19 +50,19 @@ export async function seedDatabase() {
     const scienceExamId = uuidv4();
 
     await pool.query(`
-      INSERT INTO exams (id, title, description, created_by)
-      VALUES ('${mathExamId}', 'Mathematics Exam', 'A comprehensive test of math skills', '${adminId}')
+      INSERT INTO exams (id, title, description, created_by, status, duration)
+      VALUES ('${mathExamId}', 'Mathematics Exam', 'A comprehensive test of math skills', '${adminId}', 'published', 60)
       ON CONFLICT DO NOTHING;
     `);
 
     await pool.query(`
-      INSERT INTO exams (id, title, description, created_by)
-      VALUES ('${scienceExamId}', 'Science Quiz', 'Test your knowledge of basic science concepts', '${adminId}')
+      INSERT INTO exams (id, title, description, created_by, status, duration)
+      VALUES ('${scienceExamId}', 'Science Quiz', 'Test your knowledge of basic science concepts', '${adminId}', 'draft', 45)
       ON CONFLICT DO NOTHING;
     `);
     console.log('Exams created');
 
-    // Create time blocks
+    // Create time blocks - Update to match new schema
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
@@ -71,97 +71,132 @@ export async function seedDatabase() {
 
     // Current active time block for math exam
     await pool.query(`
-      INSERT INTO time_blocks (id, exam_id, start_time, end_time)
-      VALUES ('${uuidv4()}', '${mathExamId}', '${oneHourAgo.toISOString()}', '${oneHourLater.toISOString()}')
+      INSERT INTO time_blocks (id, exam_id, start_time, end_time, duration)
+      VALUES ('${uuidv4()}', '${mathExamId}', '${oneHourAgo.toISOString()}', '${oneHourLater.toISOString()}', 60)
       ON CONFLICT DO NOTHING;
+    `);
+
+    // Also update availableFrom and availableTo in the exams table for the math exam
+    await pool.query(`
+      UPDATE exams 
+      SET available_from = '${oneHourAgo.toISOString()}', available_to = '${oneHourLater.toISOString()}'
+      WHERE id = '${mathExamId}';
     `);
 
     // Future time block for science exam
     await pool.query(`
-      INSERT INTO time_blocks (id, exam_id, start_time, end_time)
-      VALUES ('${uuidv4()}', '${scienceExamId}', '${twoDaysLater.toISOString()}', '${threeDaysLater.toISOString()}')
+      INSERT INTO time_blocks (id, exam_id, start_time, end_time, duration)
+      VALUES ('${uuidv4()}', '${scienceExamId}', '${twoDaysLater.toISOString()}', '${threeDaysLater.toISOString()}', 45)
       ON CONFLICT DO NOTHING;
     `);
+
+    // Also update availableFrom and availableTo in the exams table for the science exam
+    await pool.query(`
+      UPDATE exams 
+      SET available_from = '${twoDaysLater.toISOString()}', available_to = '${threeDaysLater.toISOString()}'
+      WHERE id = '${scienceExamId}';
+    `);
+
     console.log('Time blocks created');
 
-    // Create math exam questions with MCQ options
+    // Create math exam questions - Updated to match schema
     const mathQuestions = [
       {
         id: uuidv4(),
-        description: 'What is 2 + 2?',
+        text: 'What is 2 + 2?',
+        type: 'single_choice',
         options: JSON.stringify([
-          { id: '1', text: '3' },
-          { id: '2', text: '4' },
-          { id: '3', text: '5' },
-          { id: '4', text: '6' }
+          { id: '1', text: '3', isCorrect: false },
+          { id: '2', text: '4', isCorrect: true },
+          { id: '3', text: '5', isCorrect: false },
+          { id: '4', text: '6', isCorrect: false }
         ]),
-        correctOption: '2'
+        correctAnswer: '2'
       },
       {
         id: uuidv4(),
-        description: 'Solve for x: 3x - 6 = 9',
+        text: 'Solve for x: 3x - 6 = 9',
+        type: 'single_choice',
         options: JSON.stringify([
-          { id: '1', text: '3' },
-          { id: '2', text: '5' },
-          { id: '3', text: '6' },
-          { id: '4', text: '15' }
+          { id: '1', text: '3', isCorrect: false },
+          { id: '2', text: '5', isCorrect: true },
+          { id: '3', text: '6', isCorrect: false },
+          { id: '4', text: '15', isCorrect: false }
         ]),
-        correctOption: '2'
+        correctAnswer: '2'
       },
       {
         id: uuidv4(),
-        description: 'What is the area of a rectangle with length 5 and width 3?',
+        text: 'What is the area of a rectangle with length 5 and width 3?',
+        type: 'single_choice',
         options: JSON.stringify([
-          { id: '1', text: '8' },
-          { id: '2', text: '15' },
-          { id: '3', text: '16' },
-          { id: '4', text: '18' }
+          { id: '1', text: '8', isCorrect: false },
+          { id: '2', text: '15', isCorrect: true },
+          { id: '3', text: '16', isCorrect: false },
+          { id: '4', text: '18', isCorrect: false }
         ]),
-        correctOption: '2'
+        correctAnswer: '2'
       }
     ];
 
     for (const question of mathQuestions) {
       await pool.query(`
-        INSERT INTO questions (id, exam_id, description, options, correct_option)
-        VALUES ('${question.id}', '${mathExamId}', '${question.description}', '${question.options}', '${question.correctOption}')
+        INSERT INTO questions (id, exam_id, text, type, options, correct_answer, marks)
+        VALUES ('${question.id}', '${mathExamId}', '${question.text}', '${question.type}', '${question.options}', '${question.correctAnswer}', 1)
         ON CONFLICT DO NOTHING;
       `);
     }
 
-    // Create science exam questions
+    // Update total questions count for math exam
+    await pool.query(`
+      UPDATE exams 
+      SET total_questions = ${mathQuestions.length}
+      WHERE id = '${mathExamId}';
+    `);
+
+    // Create science exam questions - Updated to match schema
     const scienceQuestions = [
       {
         id: uuidv4(),
-        description: 'Which planet is known as the Red Planet?',
+        text: 'Which planet is known as the Red Planet?',
+        type: 'single_choice',
         options: JSON.stringify([
-          { id: '1', text: 'Venus' },
-          { id: '2', text: 'Mars' },
-          { id: '3', text: 'Jupiter' },
-          { id: '4', text: 'Saturn' }
+          { id: '1', text: 'Venus', isCorrect: false },
+          { id: '2', text: 'Mars', isCorrect: true },
+          { id: '3', text: 'Jupiter', isCorrect: false },
+          { id: '4', text: 'Saturn', isCorrect: false }
         ]),
-        correctOption: '2'
+        correctAnswer: '2'
       },
       {
         id: uuidv4(),
-        description: 'What is the chemical symbol for water?',
+        text: 'What is the chemical symbol for water?',
+        type: 'single_choice',
         options: JSON.stringify([
-          { id: '1', text: 'HO' },
-          { id: '2', text: 'H2O' },
-          { id: '3', text: 'CO2' },
-          { id: '4', text: 'O2' }
+          { id: '1', text: 'HO', isCorrect: false },
+          { id: '2', text: 'H2O', isCorrect: true },
+          { id: '3', text: 'CO2', isCorrect: false },
+          { id: '4', text: 'O2', isCorrect: false }
         ]),
-        correctOption: '2'
+        correctAnswer: '2'
       }
     ];
 
     for (const question of scienceQuestions) {
       await pool.query(`
-        INSERT INTO questions (id, exam_id, description, options, correct_option)
-        VALUES ('${question.id}', '${scienceExamId}', '${question.description}', '${question.options}', '${question.correctOption}')
+        INSERT INTO questions (id, exam_id, text, type, options, correct_answer, marks)
+        VALUES ('${question.id}', '${scienceExamId}', '${question.text}', '${question.type}', '${question.options}', '${question.correctAnswer}', 1)
         ON CONFLICT DO NOTHING;
       `);
     }
+
+    // Update total questions count for science exam
+    await pool.query(`
+      UPDATE exams 
+      SET total_questions = ${scienceQuestions.length}
+      WHERE id = '${scienceExamId}';
+    `);
+
     console.log('Exam questions created');
 
     // Create access keys
@@ -183,7 +218,7 @@ export async function seedDatabase() {
     }
     console.log('Access keys created');
 
-    // Create submissions for the math exam
+    // Create submissions for the math exam - Make sure this matches the submissions table structure
     // Student 1 submission (correct answers)
     const submission1Id = uuidv4();
     await pool.query(`
@@ -232,6 +267,14 @@ export async function seedDatabase() {
       )
       ON CONFLICT DO NOTHING;
     `);
+
+    // Update participants count in the exams table
+    await pool.query(`
+      UPDATE exams 
+      SET participants = 3
+      WHERE id = '${mathExamId}';
+    `);
+
     console.log('Submissions created');
 
     console.log('Database seeding completed successfully');

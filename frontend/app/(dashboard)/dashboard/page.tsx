@@ -1,57 +1,61 @@
-'use client'
+'use client';
 
-import { useQuery } from '@tanstack/react-query'
-import { examApi, submissionApi, userApi } from '@/lib/api'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CalendarCheck2, ListChecks, Clock, Users } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Exam, Submission, User } from '@/types'
+import { useQuery } from '@tanstack/react-query';
+import { examApi, submissionApi, userApi } from '@/lib/api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CalendarCheck2, ListChecks, Clock, Users } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Exam, Submission, User } from '@/types';
 
 export default function DashboardPage() {
   // Fetch exams
   const { data: exams = [], isLoading: examsLoading } = useQuery<Exam[]>({
     queryKey: ['exams'],
     queryFn: async () => {
-      const { data } = await examApi.getAll()
-      return data
+      const { data } = await examApi.getAll();
+      return data;
     },
-  })
+  });
 
   // Fetch user submissions
   const { data: submissions = [], isLoading: submissionsLoading } = useQuery<Submission[]>({
     queryKey: ['submissions'],
     queryFn: async () => {
-      const { data } = await submissionApi.getByUser()
-      return data
+      const { data } = await submissionApi.getByUser();
+      return data;
     },
-  })
+  });
 
   // Fetch current user
   const { data: user } = useQuery<User>({
     queryKey: ['user'],
     queryFn: async () => {
-      const { data } = await userApi.getCurrentUser()
-      return data
+      const { data } = await userApi.getCurrentUser();
+      return data;
     },
-  })
+  });
 
-  const isAdmin = user?.role === 'admin'
+  console.log('user', user);
+  const isAdmin = user?.roles?.includes('admin');
+  console.log('isAdmin', isAdmin);
 
-  const upcomingExams = exams.filter((exam: Exam) => {
-    const hasTimeBlocks = exam.timeBlocks && exam.timeBlocks.length > 0
-    if (!hasTimeBlocks) return false
-    
-    const now = new Date().getTime()
-    return exam.timeBlocks.some((block) => {
-      const startTime = new Date(block.startTime).getTime()
-      return startTime > now
+  const upcomingExams = exams
+    .filter((exam: Exam) => {
+      const hasTimeBlocks = exam.timeBlocks && exam.timeBlocks.length > 0;
+      if (!hasTimeBlocks) return false;
+
+      const now = new Date().getTime();
+      return exam.timeBlocks.some(block => {
+        const startTime = new Date(block.startTime).getTime();
+        return startTime > now;
+      });
     })
-  }).slice(0, 3)
+    .slice(0, 3);
 
-  const recentSubmissions = submissions.slice(0, 3)
+  const recentSubmissions = submissions.slice(0, 3);
 
   return (
     <div className="space-y-6">
@@ -69,9 +73,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Exams
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Exams</CardTitle>
             <ListChecks className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </CardHeader>
           <CardContent>
@@ -84,13 +86,13 @@ export default function DashboardPage() {
 
         <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Submissions
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Submissions</CardTitle>
             <CalendarCheck2 className="h-4 w-4 text-green-600 dark:text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{submissionsLoading ? '...' : submissions.length}</div>
+            <div className="text-2xl font-bold">
+              {submissionsLoading ? '...' : submissions.length}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               {isAdmin ? 'Total submissions' : 'Your submissions'}
             </p>
@@ -106,9 +108,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{examsLoading ? '...' : upcomingExams.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Within the next week
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">Within the next week</p>
           </CardContent>
         </Card>
 
@@ -121,7 +121,13 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isAdmin ? '120' : `${submissionsLoading || examsLoading ? '...' : Math.round((submissions.length / Math.max(exams.length, 1)) * 100)}%`}
+              {isAdmin
+                ? '120'
+                : `${
+                    submissionsLoading || examsLoading
+                      ? '...'
+                      : Math.round((submissions.length / Math.max(exams.length, 1)) * 100)
+                  }%`}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {isAdmin ? 'Registered users' : 'Exams completed'}
@@ -176,7 +182,7 @@ export default function DashboardPage() {
           </div>
         </TabsContent>
         <TabsContent value="recent" className="space-y-4 pt-4">
-          <h3 className="text-lg font-medium">Recent Submissions</h3>
+          <h3 className="text-lg font-medium ">Recent Submissions</h3>
           {submissionsLoading ? (
             <div className="animate-pulse">Loading...</div>
           ) : recentSubmissions.length > 0 ? (
@@ -186,14 +192,21 @@ export default function DashboardPage() {
                   <CardHeader className="py-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="text-base">{submission.examTitle || 'Untitled Exam'}</CardTitle>
-                        <CardDescription>Submitted on {formatDate(submission.createdAt)}</CardDescription>
+                        <CardTitle className="text-base">
+                          {submission.examTitle || 'Untitled Exam'}
+                        </CardTitle>
+                        <CardDescription>
+                          Submitted on {formatDate(submission.createdAt)}
+                        </CardDescription>
                       </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium
-                        ${submission.status === 'graded' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' 
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'
-                        }`}>
+                      <div
+                        className={`px-3 py-1 rounded-full text-xs font-medium
+                        ${
+                          submission.status === 'graded'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'
+                        }`}
+                      >
                         {submission.status === 'graded' ? 'Graded' : 'Pending'}
                       </div>
                     </div>
@@ -212,5 +225,5 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

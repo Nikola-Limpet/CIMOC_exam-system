@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"; // Removed trailing slash
 
 const api = axios.create({
   baseURL: API_URL,
@@ -16,6 +16,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log(`Making request to: ${config.baseURL}${config.url}`);
     return config;
   },
   (error) => {
@@ -38,10 +39,12 @@ api.interceptors.response.use(
 
 // Auth APIs
 export const authApi = {
-  login: (email: string, password: string) =>
-    api.post("/auth/login", { email, password }),
-  register: (userData: any) =>
-    api.post("/auth/register", userData),
+  login: async (email: string, password: string) => {
+    return api.post("/auth/login", { email, password });
+  },
+  register: async (userData: { name: string; email: string; password: string }) => {
+    return api.post("/auth/register", userData);
+  },
   profile: () =>
     api.get("/auth/profile"),
 };
