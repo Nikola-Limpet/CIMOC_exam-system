@@ -1,64 +1,76 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { examsApi, submissionApi, userApi } from '@/lib/api/index';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalendarCheck2, ListChecks, Clock, Users } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Exam, Submission, User } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ExamCard } from '@/components/exam/exam-card';
+import { examService } from '@/services';
+import { Exam } from '@/types/exam';
+import { Submission } from '@/types/submission';
+import { User } from '@/types/user';
 import { useAuth } from '@/providers/auth-provider';
 
 export function DashboardContent() {
   const { user: authUser } = useAuth();
-  const isAdmin = authUser?.role === 'admin';
+  const isAdmin = authUser?.roles === 'admin';
 
-  // Fetch exams with better suspense handling
+  // Use the service to fetch all exams
   const { data: exams = [], isLoading: examsLoading } = useQuery<Exam[]>({
     queryKey: ['exams'],
-    queryFn: async () => {
-      const { data } = await examsApi.getAll();
-      return data;
-    },
+    queryFn: examService.getExams,
   });
 
-  // Fetch user submissions
-  const { data: submissions = [], isLoading: submissionsLoading } = useQuery<Submission[]>({
-    queryKey: ['submissions'],
-    queryFn: async () => {
-      const { data } = await submissionApi.getByUser();
-      return data;
-    },
+  // Use the service to filter upcoming exams
+  const { data: upcomingExams = [], isLoading: upcomingExamsLoading } = useQuery<Exam[]>({
+    queryKey: ['upcomingExams'],
+    queryFn: examService.getUpcomingExams,
+    // Only fetch upcoming exams if we have the main exams data
+    enabled: exams.length > 0,
   });
 
-  // Fetch current user
-  const { data: user } = useQuery<User>({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const { data } = await userApi.getCurrentUser();
-      return data;
-    },
-  });
-
-  const upcomingExams = exams
-    .filter((exam: Exam) => {
-      const hasTimeBlocks = exam.timeBlocks && exam.timeBlocks.length > 0;
-      if (!hasTimeBlocks) return false;
-
-      const now = new Date().getTime();
-      return exam.timeBlocks.some(block => {
-        const startTime = new Date(block.startTime).getTime();
-        return startTime > now;
-      });
-    })
-    .slice(0, 3);
-
-  const recentSubmissions = submissions.slice(0, 3);
+  // const recentSubmissions = submissions.slice(0, 3);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Welcome back, {authUser?.name || 'Student'}
+        </h2>
+        <p className="text-muted-foreground">
+          Here's a summary of your upcoming exams and recent activity
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-xl font-semibold mb-4">Upcoming Exams</h3>
+        {upcomingExamsLoading || examsLoading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="p-4 border rounded-lg">
+                <Skeleton className="h-8 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-full mb-6" />
+                <Skeleton className="h-4 w-2/3 mb-2" />
+                <Skeleton className="h-4 w-1/2 mb-6" />
+                <Skeleton className="h-9 w-24" />
+              </div>
+            ))}
+          </div>
+        ) : upcomingExams.length || exams.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {exams.map(exam => (
+              <ExamCard key={exam.id} exam={exam} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted-foreground">No upcoming exams scheduled</p>
+        )}
+      </div>
+
       <div className="flex flex-col justify-between space-y-2 md:flex-row md:items-center md:space-y-0">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         {isAdmin && (
@@ -91,9 +103,9 @@ export function DashboardContent() {
             <CalendarCheck2 className="h-4 w-4 text-green-600 dark:text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            {/* <div className="text-2xl font-bold">
               {submissionsLoading ? '...' : submissions.length}
-            </div>
+            </div> */}
             <p className="text-xs text-muted-foreground mt-1">
               {isAdmin ? 'Total submissions' : 'Your submissions'}
             </p>
@@ -122,13 +134,13 @@ export function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isAdmin
+              {/* {isAdmin
                 ? '120'
                 : `${
                     submissionsLoading || examsLoading
                       ? '...'
                       : Math.round((submissions.length / Math.max(exams.length, 1)) * 100)
-                  }%`}
+                  }%`} */}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {isAdmin ? 'Registered users' : 'Exams completed'}
@@ -148,16 +160,14 @@ export function DashboardContent() {
             <div className="animate-pulse">Loading...</div>
           ) : upcomingExams.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {upcomingExams.map((exam: Exam) => (
+              {exams.map((exam: Exam) => (
                 <Card key={exam.id}>
                   <CardHeader>
                     <CardTitle>{exam.title}</CardTitle>
                     <CardDescription>
-                      {exam.timeBlocks && exam.timeBlocks[0] ? (
-                        <>Starts {formatDate(exam.timeBlocks[0].startTime)}</>
-                      ) : (
-                        'No start time specified'
-                      )}
+                      {exam.availableFrom
+                        ? `Starts ${formatDate(exam.availableFrom)}`
+                        : 'No start time specified'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -182,7 +192,7 @@ export function DashboardContent() {
             </Button>
           </div>
         </TabsContent>
-        <TabsContent value="recent" className="space-y-4 pt-4">
+        {/* <TabsContent value="recent" className="space-y-4 pt-4">
           <h3 className="text-lg font-medium">Recent Submissions</h3>
           {submissionsLoading ? (
             <div className="animate-pulse">Loading...</div>
@@ -223,7 +233,7 @@ export function DashboardContent() {
               <Link href="/submissions">View All Submissions</Link>
             </Button>
           </div>
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   );

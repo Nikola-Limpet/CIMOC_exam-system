@@ -1,10 +1,10 @@
-import { get } from 'http';
+
 import { api } from './api';
 
 export interface TimeBlock {
   id?: string;
-  startTime: string;
-  endTime: string;
+  availableFrom: string;
+  availableTo: string;
   duration?: number;
 }
 
@@ -16,8 +16,6 @@ export interface Exam {
   createdAt: string;
   updatedAt: string;
   duration?: number;
-  availableFrom?: string;
-  availableTo?: string;
   totalQuestions?: number;
   status?: 'draft' | 'published' | 'archived';
   participants?: number;

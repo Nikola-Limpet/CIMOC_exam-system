@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const userData = JSON.parse(cachedUser);
           setUser(userData);
-          console.log('Auth state restored from localStorage:', userData);
+          // see the user data in the console from localStorage
+          // console.log('Auth state restored from localStorage:', userData);
         } catch (e) {
           console.error('Failed to parse cached user data:', e);
         }
@@ -85,20 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(userData);
       } catch (apiError) {
         console.error('Failed to validate token with API:', apiError);
-
-        // IMPORTANT: Only clear tokens if it's a 401/403 error
-        // if (
-        //   apiError.response &&
-        //   (apiError.response.status === 401 || apiError.response.status === 403)
-        // ) {
-        //   console.log('Auth token invalid - clearing data');
-        //   localStorage.removeItem('token');
-        //   localStorage.removeItem('user');
-        //   setUser(null);
-        // } else {
-        //   // For other errors (network, etc), keep the token and use cached data
-        //   console.log('Non-auth API error - keeping cached data');
-        // }
       }
     } catch (error) {
       console.error('Auth state refresh error:', error);

@@ -12,11 +12,12 @@ export interface Exam {
   duration?: number;
   status?: 'draft' | 'published' | 'archived';
   hasAccess?: boolean;
+  timeBlocks?: TimeBlock[];
 }
 
 export interface TimeBlock {
-  id?: string;
+  id: string;
   startTime: string;
   endTime: string;
-  duration?: number;
+  examId: string;
 }

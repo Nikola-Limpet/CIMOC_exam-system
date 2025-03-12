@@ -30,8 +30,7 @@ export interface ResetPasswordData {
 export const authApi = {
   // Get current user profile
   profile: () => {
-    console.log('Fetching user profile');
-    return api.get<User>('/auth/me');
+    return api.get<User>('/auth/profile');
   },
 
   // Login with email and password

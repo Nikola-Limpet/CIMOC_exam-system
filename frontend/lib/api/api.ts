@@ -1,21 +1,24 @@
 import axios from 'axios';
 
-// Create axios instance with base URL from environment
+// Make sure there's no trailing slash to avoid double slashes in requests
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || 'http://localhost:3001/api';
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor for adding auth token
+// Request interceptor for adding the JWT token
 api.interceptors.request.use(
   (config) => {
-    // Only access localStorage in the browser
+    // Only access localStorage when in browser context
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+        console.log(`Adding token to ${config.url} request`);
       }
     }
     return config;
@@ -25,18 +28,23 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor for handling auth errors
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
+  (response) => response,
+  (error) => {
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      // Only redirect if we're in the browser
+      console.error('API returned 401 Unauthorized');
+
+      // Only clear token when in browser context and not already on login/register pages
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        const currentPath = window.location.pathname;
+        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/register');
+
+        if (!isAuthPage) {
+          console.log('Unauthorized request detected, will redirect to login');
+          // Don't immediately clear tokens - let the auth provider handle it
+        }
       }
     }
     return Promise.reject(error);

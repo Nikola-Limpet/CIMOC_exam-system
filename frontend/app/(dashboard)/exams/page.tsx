@@ -30,6 +30,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function ExamsPage() {
   const router = useRouter();
@@ -42,15 +43,9 @@ export default function ExamsPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   // Get current user
-  const { data: userData, isLoading: userLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const { data } = await authApi.profile();
-      return data;
-    },
-  });
+  const { user: authUser } = useAuth();
 
-  const isAdmin = userData?.role === 'admin';
+  const isAdmin = authUser?.roles === 'admin';
 
   // Fetch exams from backend with improved error and loading handling
   const {
@@ -78,6 +73,8 @@ export default function ExamsPage() {
       }
     },
   });
+
+  console.log(examsData);
 
   // Delete exam mutation (admin only)
   const deleteExamMutation = useMutation({
@@ -122,7 +119,7 @@ export default function ExamsPage() {
   };
 
   // Calculate overall loading state
-  const isInitialLoading = userLoading || examsLoading;
+  const isInitialLoading = examsLoading;
   const isRefetching = examsFetching && !examsLoading;
 
   // Extract exams array directly since API returns the array
@@ -237,7 +234,7 @@ export default function ExamsPage() {
           {exams.map(exam => (
             <ExamCard
               key={exam.id}
-              exam={exam}
+              exam={exam as import('@/types/exam').Exam}
               isAdmin={isAdmin}
               onAction={handleExamAction}
               onDelete={handleOpenDeleteDialog}
@@ -250,7 +247,7 @@ export default function ExamsPage() {
           {exams.map(exam => (
             <ExamListItem
               key={exam.id}
-              exam={exam}
+              exam={exam as import('@/types/exam').Exam}
               isAdmin={isAdmin}
               onAction={handleExamAction}
               onDelete={handleOpenDeleteDialog}

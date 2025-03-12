@@ -49,7 +49,7 @@ export function LoginForm() {
           id: response.data.user.id,
           name: response.data.user.name || response.data.user.username || 'User',
           email: response.data.user.email,
-          role: userRole[0] || 'student',
+          roles: userRole[0] || 'student',
         };
       }
 
@@ -61,7 +61,7 @@ export function LoginForm() {
           id: dataField.id,
           name: dataField.name || dataField.username || 'User',
           email: dataField.email,
-          role: userRole || 'student',
+          roles: userRole || 'student',
         };
       } else {
         console.error('User data not found in response', response.data);

@@ -124,4 +124,15 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
+
+  async getProfile(userId: string) {
+    const user = await this.databaseService.getUserById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Return user without password
+    const { password, ...result } = user;
+    return result;
+  }
 }
