@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from './drizzle.service';
 import { exams } from './schema/exams';
 import { users } from './schema/users';
@@ -63,9 +63,6 @@ export class DatabaseService {
     });
   }
 
-  async getTimeBlocks(examId: string) {
-    return this.drizzleService.findByField(timeBlocks, timeBlocks.examId, examId);
-  }
 
   async deleteTimeBlocks(examId: string) {
     return this.drizzleService.executeQuery(db =>
@@ -74,20 +71,48 @@ export class DatabaseService {
   }
 
   // Access key methods
-  async createAccessKey(keyData: any) {
+  async createAccessKey(data: {
+    examId: string;
+    key: string;
+    issuedBy: string; // Changed from createdBy
+    issuedTo?: string;
+    usageLimit?: number | null;
+    usageCount?: number;
+    description?: string | null;
+    revoked?: boolean;
+  }) {
     return this.drizzleService.create(accessKeys, {
       id: uuidv4(),
-      ...keyData
+      ...data,
+      revoked: data.revoked ?? false,
+      createdAt: new Date(),
     });
   }
 
-  async getAccessKey(key: string) {
-    const result = await this.drizzleService.findByField(accessKeys, accessKeys.key, key);
-    return result.length > 0 ? result[0] : null;
+  // Get access key by ID
+  async getAccessKeyById(id: string) {
+    return this.drizzleService.executeQuery(db =>
+      db.select().from(accessKeys).where(eq(accessKeys.id, id)).limit(1)
+    ).then(result => result[0] || null);
   }
 
-  async getAccessKeyById(id: string) {
-    return this.drizzleService.findById(accessKeys, id);
+  async getAccessKey(key: string) {
+    return this.drizzleService.executeQuery(db =>
+      db.select().from(accessKeys).where(eq(accessKeys.key, key)).limit(1)
+    ).then(result => result[0] || null);
+  }
+
+
+  async incrementAccessKeyUsage(accessKeyId: string) {
+    const accessKey = await this.getAccessKeyById(accessKeyId);
+
+    if (!accessKey) {
+      throw new NotFoundException(`Access key with ID ${accessKeyId} not found`);
+    }
+
+    return this.drizzleService.update(accessKeys, accessKeyId, {
+      usageCount: accessKey.usageCount + 1
+    });
   }
 
   async getAccessKeysByExam(examId: string) {

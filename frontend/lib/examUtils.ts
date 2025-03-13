@@ -119,3 +119,12 @@ export function getActiveExams(exams: Exam[]): Exam[] {
   if (!Array.isArray(exams)) return [];
   return exams.filter(isExamActive);
 }
+
+/**
+ * Gets the exam duration in minutes, handling potential inconsistencies
+ * between timeLimit and duration properties
+ */
+export function getExamDuration(exam: Exam): number {
+  // Return the first defined value, defaulting to 60 minutes
+  return exam.timeLimit || exam.duration || 60;
+}

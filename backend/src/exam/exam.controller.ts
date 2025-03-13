@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Request } from '@nestjs/common';
 import { ExamService } from './exam.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
+
 
 @Controller('exams')
 export class ExamController {
@@ -30,12 +31,6 @@ export class ExamController {
     return this.examService.findOne(id);
   }
 
-  @Get(':id/questions')
-  @UseGuards(JwtAuthGuard)
-  getExamQuestions(@Param('id') id: string) {
-    return this.examService.getExamQuestions(id);
-  }
-
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -49,4 +44,8 @@ export class ExamController {
   remove(@Param('id') id: string) {
     return this.examService.remove(id);
   }
+
+
+
+
 }

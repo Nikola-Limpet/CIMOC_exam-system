@@ -1,15 +1,37 @@
-import { IsNotEmpty, IsString, IsUUID, IsOptional, IsDateString } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsUUID } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAccessKeyDto {
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Exam ID',
+    required: true
+  })
   @IsUUID()
   examId: string;
 
-  @IsNotEmpty()
-  @IsUUID()
-  issuedTo: string; // User ID to whom the key is issued
-
+  @ApiProperty({
+    description: 'User ID this key is issued to (optional)',
+    required: false
+  })
   @IsOptional()
-  @IsDateString()
-  expiresAt?: string; // Optional expiration date
+  @IsUUID()
+  issuedTo?: string;
+
+  @ApiProperty({
+    description: 'Access key description',
+    required: false,
+    example: 'For Group A students'
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({
+    description: 'Maximum number of times this key can be used',
+    required: false,
+    example: 30
+  })
+  @IsOptional()
+  @IsNumber()
+  usageLimit?: number;
 }

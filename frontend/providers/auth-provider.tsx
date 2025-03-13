@@ -36,15 +36,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Use useCallback to prevent recreation of this function on each render
   const refreshUserState = useCallback(async () => {
     if (typeof window === 'undefined') return;
+
+    // Skip token verification on auth pages
+    const isAuthPage =
+      window.location.pathname.includes('/login') || window.location.pathname.includes('/register');
+
+    if (isAuthPage) {
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
 
     try {
       const token = localStorage.getItem('token');
-      console.log('Token found in localStorage:', !!token);
 
       if (!token) {
         setUser(null);
@@ -58,7 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const userData = JSON.parse(cachedUser);
           setUser(userData);
-          // see the user data in the console from localStorage
           // console.log('Auth state restored from localStorage:', userData);
         } catch (e) {
           console.error('Failed to parse cached user data:', e);
@@ -86,9 +92,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(userData);
       } catch (apiError) {
         console.error('Failed to validate token with API:', apiError);
+        // If API validation fails, remove token and user data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
       }
     } catch (error) {
       console.error('Auth state refresh error:', error);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }

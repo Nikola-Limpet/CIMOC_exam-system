@@ -46,31 +46,6 @@ export function DashboardContent() {
         </p>
       </div>
 
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Upcoming Exams</h3>
-        {upcomingExamsLoading || examsLoading ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="p-4 border rounded-lg">
-                <Skeleton className="h-8 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-full mb-6" />
-                <Skeleton className="h-4 w-2/3 mb-2" />
-                <Skeleton className="h-4 w-1/2 mb-6" />
-                <Skeleton className="h-9 w-24" />
-              </div>
-            ))}
-          </div>
-        ) : upcomingExams.length || exams.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {exams.map(exam => (
-              <ExamCard key={exam.id} exam={exam} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">No upcoming exams scheduled</p>
-        )}
-      </div>
-
       <div className="flex flex-col justify-between space-y-2 md:flex-row md:items-center md:space-y-0">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         {isAdmin && (

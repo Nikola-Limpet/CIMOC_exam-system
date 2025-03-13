@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { DatabaseService } from '../database/database.service';
-import { TimeBlock } from './interfaces/time-block.interface';
+
 
 @Injectable()
 export class ExamService {
@@ -11,44 +11,20 @@ export class ExamService {
   ) { }
 
   async create(createExamDto: CreateExamDto, userId: string) {
-    const { title, description, timeBlocks, questions, ...rest } = createExamDto;
+    const { title, description, availableFrom, availableTo, ...rest } = createExamDto;
 
-    // Insert exam into the database
-    const exam = await this.databaseService.createExam({
+    // Process date fields - convert strings to Date objects
+    const examData = {
       title,
       description,
       createdBy: userId,
-      ...rest
-    });
-
-    // Insert time blocks separately
-    if (timeBlocks && timeBlocks.length > 0) {
-      await Promise.all(
-        timeBlocks.map(block =>
-          this.databaseService.createTimeBlock({
-            examId: exam.id,
-            startTime: new Date(block.startTime),
-            endTime: new Date(block.endTime)
-          })
-        )
-      );
-    }
-
-    // Insert questions separately
-    if (questions && questions.length > 0) {
-      await Promise.all(
-        questions.map(question =>
-          this.databaseService.createQuestion({
-            examId: exam.id,
-            description: question.description,
-            imageUrl: question.imageUrl,
-            options: question.options,
-            correctOption: question.correctOption
-          })
-        )
-      );
-    }
-
+      ...rest,
+      // Convert date strings to Date objects if they exist
+      ...(availableFrom && { availableFrom: new Date(availableFrom) }),
+      ...(availableTo && { availableTo: new Date(availableTo) }),
+    };
+    // Insert exam into the database
+    const exam = await this.databaseService.createExam(examData);
     return exam;
   }
 
@@ -64,53 +40,20 @@ export class ExamService {
     return exam;
   }
 
+  // Also update the update method
   async update(id: string, updateExamDto: UpdateExamDto) {
-    const exam = await this.findOne(id);
-    const { timeBlocks, questions, ...examData } = updateExamDto;
+    const { availableFrom, availableTo, ...rest } = updateExamDto;
+
+    // Process date fields - convert strings to Date objects
+    const examData = {
+      ...rest,
+      // Convert date strings to Date objects if they exist
+      ...(availableFrom && { availableFrom: new Date(availableFrom) }),
+      ...(availableTo && { availableTo: new Date(availableTo) }),
+    };
 
     // Update exam details
     await this.databaseService.updateExam(id, examData);
-
-    // If time blocks are provided, update them
-    if (timeBlocks) {
-      // Delete existing time blocks
-      await this.databaseService.deleteTimeBlocks(id);
-
-      // Create new time blocks
-      if (timeBlocks.length > 0) {
-        await Promise.all(
-          timeBlocks.map(block =>
-            this.databaseService.createTimeBlock({
-              examId: id,
-              startTime: new Date(block.startTime),
-              endTime: new Date(block.endTime)
-            })
-          )
-        );
-      }
-    }
-
-    // If questions are provided, update them
-    if (questions) {
-      // Delete existing questions
-      await this.databaseService.deleteQuestionsByExam(id);
-
-      // Create new questions
-      if (questions.length > 0) {
-        await Promise.all(
-          questions.map(question =>
-            this.databaseService.createQuestion({
-              examId: id,
-              description: question.description,
-              imageUrl: question.imageUrl,
-              options: question.options,
-              correctOption: question.correctOption
-            })
-          )
-        );
-      }
-    }
-
     return this.findOne(id);
   }
 
@@ -124,18 +67,18 @@ export class ExamService {
   }
 
   async validateExamAvailability(examId: string): Promise<boolean> {
-    const now = new Date();
-    const timeBlocks = await this.databaseService.getTimeBlocks(examId);
+    const exam = await this.findOne(examId);
 
-    if (!timeBlocks || timeBlocks.length === 0) {
-      // If no time blocks are defined, the exam is always available
-      return true;
+    // Check if the exam is available
+    if (exam.availableFrom && new Date(exam.availableFrom) > new Date()) {
+      return false;
     }
 
-    // Check if current time is within any time block
-    return timeBlocks.some(
-      block => now >= new Date(block.startTime) && now <= new Date(block.endTime)
-    );
+    if (exam.availableTo && new Date(exam.availableUntil) < new Date()) {
+      return false;
+    }
+
+    return true;
   }
 
   async validateExamAccess(examId: string): Promise<void> {
@@ -144,13 +87,5 @@ export class ExamService {
     if (!isAvailable) {
       throw new ForbiddenException('This exam is not currently available');
     }
-  }
-
-  async getExamQuestions(examId: string) {
-    // Validate that the exam exists
-    await this.findOne(examId);
-
-    // Get questions for the exam
-    return this.databaseService.getQuestionsByExam(examId);
   }
 }

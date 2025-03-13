@@ -15,7 +15,6 @@ export function LoginForm() {
 
   const handleSubmit = async (values: any) => {
     setError('');
-    console.log('Login attempt with:', values.email);
 
     try {
       // Explicitly type the credentials to match the expected interface
@@ -37,9 +36,9 @@ export function LoginForm() {
         throw new Error('No authentication token received');
       }
 
-      // Extract user data - handle different response structures
+      // Only extract user data if token is found
       let userData;
-      let userRole = null; // Capture the role separately first
+      let userRole = null;
 
       // Option 1: User data in response.data.user
       if (response.data.user) {
@@ -52,8 +51,7 @@ export function LoginForm() {
           roles: userRole[0] || 'student',
         };
       }
-
-      // Option 3: User data in response.data.data
+      // Option 2: User data in response.data.data
       else if (response.data.data) {
         const dataField = response.data.data;
         userRole = dataField.role || dataField.userRole;

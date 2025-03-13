@@ -28,7 +28,7 @@ export class AccessController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   listKeys(@Query('examId') examId?: string) {
-    return this.accessService.listAccessKeys(examId);
+    return this.accessService.getAccessKeysByExam(examId);
   }
 
   @Delete(':id')

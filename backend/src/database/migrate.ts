@@ -25,8 +25,8 @@ const runMigration = async () => {
   // Create Drizzle instance
   const db = drizzle(pool);
 
-  // Run migrations
-  await migrate(db, { migrationsFolder: join(__dirname, '../../drizzle/migrations') });
+  // Change this line to point to the correct directory
+  await migrate(db, { migrationsFolder: join(__dirname, '../../drizzle') });
 
   console.log('Migrations completed successfully');
 
@@ -37,4 +37,4 @@ const runMigration = async () => {
 runMigration().catch((err) => {
   console.error('Migration failed:', err);
   process.exit(1);
-}); 
+});

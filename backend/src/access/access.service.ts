@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 import { DatabaseService } from '../database/database.service';
@@ -15,7 +15,7 @@ export class AccessService {
   ) { }
 
   async generateAccessKey(createAccessKeyDto: CreateAccessKeyDto, adminId: string) {
-    const { examId, issuedTo, expiresAt } = createAccessKeyDto;
+    const { examId, issuedTo, usageLimit, description } = createAccessKeyDto;
 
     // Verify the exam exists
     await this.examService.findOne(examId);
@@ -31,9 +31,10 @@ export class AccessService {
     const result = await this.databaseService.createAccessKey({
       key: accessKey,
       examId,
-      issuedTo,
       issuedBy: adminId,
-      expiresAt: expiresAt ? new Date(expiresAt) : null,
+      issuedTo,
+      usageLimit,
+      description
     });
 
     return result;
@@ -54,16 +55,24 @@ export class AccessService {
       throw new UnauthorizedException('Access key is not valid for this exam');
     }
 
-    // Check if the key is expired
-    if (key.expiresAt && new Date() > new Date(key.expiresAt)) {
-      throw new UnauthorizedException('Access key has expired');
+    // Check if the key has been revoked
+    if (key.revoked) {
+      throw new UnauthorizedException('Access key has been revoked');
     }
+
+    // Check if usage limit is reached
+    if (key.usageLimit && key.usageCount >= key.usageLimit) {
+      throw new UnauthorizedException('Access key usage limit has been reached');
+    }
+
+    // Increment the usage count
+    await this.databaseService.incrementAccessKeyUsage(key.id);
 
     // Also check exam availability (time blocks)
     await this.examService.validateExamAccess(examId);
 
     // Return user info and exam data
-    const user = await this.databaseService.getUserById(key.issuedTo);
+    const user = key.issuedTo ? await this.databaseService.getUserById(key.issuedTo) : null;
     const exam = await this.examService.findOne(examId);
 
     return {
@@ -73,20 +82,31 @@ export class AccessService {
     };
   }
 
-  async listAccessKeys(examId?: string) {
-    if (examId) {
-      return this.databaseService.getAccessKeysByExam(examId);
-    }
+  async getAllAccessKeys() {
     return this.databaseService.getAllAccessKeys();
+  }
+
+  async getAccessKeysByExam(examId: string) {
+    return this.databaseService.getAccessKeysByExam(examId);
   }
 
   async revokeAccessKey(id: string) {
     const key = await this.databaseService.getAccessKeyById(id);
+
     if (!key) {
       throw new NotFoundException(`Access key with ID ${id} not found`);
     }
 
+    if (key.revoked) {
+      throw new BadRequestException(`Access key ${id} is already revoked`);
+    }
+
     await this.databaseService.revokeAccessKey(id);
-    return { message: `Access key ${id} has been revoked` };
+
+    return {
+      message: `Access key has been successfully revoked`,
+      id,
+      key: key.key // Only showing the key for confirmation, not security-critical
+    };
   }
 }

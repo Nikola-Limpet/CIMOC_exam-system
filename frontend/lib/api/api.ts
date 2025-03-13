@@ -28,23 +28,19 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for handling auth errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
-      console.error('API returned 401 Unauthorized');
+      // Only redirect if not already on an auth page
+      const isAuthPage =
+        typeof window !== 'undefined' &&
+        (window.location.pathname.includes('/login') ||
+          window.location.pathname.includes('/register'));
 
-      // Only clear token when in browser context and not already on login/register pages
-      if (typeof window !== 'undefined') {
-        const currentPath = window.location.pathname;
-        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/register');
-
-        if (!isAuthPage) {
-          console.log('Unauthorized request detected, will redirect to login');
-          // Don't immediately clear tokens - let the auth provider handle it
-        }
+      if (!isAuthPage) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
