@@ -29,17 +29,33 @@ export interface TimeBlock {
 export interface Question {
   id: string;
   examId: string;
-  description: string;
-  type: 'multiple-choice' | 'true-false' | 'single_choice' | 'short-answer' | 'essay';
-  options?: Option[];
-  correctAnswer?: string;
+  text: string;
+  image?: string | null;
+  type: QuestionType;
+  options?: Option[] | null;
+  correctAnswer?: string | null;
   marks?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type QuestionType = 'multiple_choice' | 'single_choice' | 'text';
+
+export interface QuestionWithTime extends Question {
+  timeBlockId: string;
 }
 
 export interface Option {
   id: string;
   text: string;
   isCorrect?: boolean;
+}
+
+// New interface for exam answers
+export interface ExamAnswer {
+  questionId: string;
+  answer: string | string[]; // Can be string for text/single choice or string[] for multiple choice
+  type: QuestionType;
 }
 
 // New interface for access keys

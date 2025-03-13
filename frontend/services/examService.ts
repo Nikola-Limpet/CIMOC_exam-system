@@ -1,5 +1,5 @@
 import { examApi } from '@/lib/api/exam';
-import { Exam, AccessKey } from '@/types/exam';
+import { Exam, AccessKey, Question } from '@/types/exam';
 import { getUpcomingExams, getActiveExams } from '@/lib/examUtils';
 
 export interface AccessVerificationResult {
@@ -46,7 +46,7 @@ export const examService = {
    * @param id Exam ID
    * @returns Promise resolving to exam questions
    */
-  getExamQuestions: async (id: string): Promise<any[]> => {
+  getExamQuestionsByExamId: async (id: string): Promise<Question[]> => {
     try {
       return await examApi.getExamQuestions(id);
     } catch (error) {
@@ -54,6 +54,7 @@ export const examService = {
       throw error;
     }
   },
+
 
   /**
    * Verify an exam access key
@@ -167,5 +168,6 @@ export const examService = {
       console.error(`Error generating access key for exam ${examId}:`, error);
       throw error;
     }
-  }
+  },
+
 };

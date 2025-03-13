@@ -60,9 +60,10 @@ export const examApi = {
     return response.data;
   },
 
-  // Get exam questions
+
+  // Get exam questions by exam ID
   getExamQuestions: async (id: string) => {
-    const response = await api.get(`/exams/${id}/questions`);
+    const response = await api.get(`/questions/exam/${id}`);
     return response.data;
   },
 

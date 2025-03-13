@@ -11,6 +11,8 @@ import {
   getStatusBackground,
 } from '@/lib/utils/exam-utils';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { TakeExamDialog } from './take-exam-dialog';
 
 import {
   Card,
@@ -29,6 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { isExamActive } from '@/lib/examUtils';
 
 interface ExamCardProps {
   exam: Exam;
@@ -40,11 +43,33 @@ interface ExamCardProps {
 export function ExamCard({ exam, isAdmin, onAction, onDelete }: ExamCardProps) {
   const router = useRouter();
   const availability = getAvailabilityInfo(exam.availableFrom, exam.availableTo);
+  const examActive = isExamActive(exam);
+  const [takeExamDialogOpen, setTakeExamDialogOpen] = useState(false);
+
+  const handleTakeExamClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (examActive) {
+      setTakeExamDialogOpen(true);
+    }
+  };
+
+  const handleProceedToExam = () => {
+    setTakeExamDialogOpen(false);
+    router.push(`/exams/${exam.id}/take`);
+  };
+
+  const handleCardClick = () => {
+    if (isAdmin) {
+      onAction(exam);
+    } else {
+      router.push(`/exams/${exam.id}/details`);
+    }
+  };
 
   return (
     <Card
       className="overflow-hidden transition-all border border-border/40 hover:border-border hover:shadow-md cursor-pointer group"
-      onClick={() => onAction(exam)}
+      onClick={handleCardClick}
     >
       <CardHeader className="pb-3 relative">
         <div
@@ -152,7 +177,7 @@ export function ExamCard({ exam, isAdmin, onAction, onDelete }: ExamCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-2">
+      <CardFooter className="flex justify-between pt-2">
         <div className="flex w-full items-center justify-between">
           {exam.status ? (
             <Badge
@@ -176,7 +201,26 @@ export function ExamCard({ exam, isAdmin, onAction, onDelete }: ExamCardProps) {
             </span>
           )}
         </div>
+
+        {/* Student actions */}
+        {!isAdmin && examActive && (
+          <Button
+            size="sm"
+            onClick={handleTakeExamClick}
+            className="ml-auto bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+          >
+            Take Exam
+          </Button>
+        )}
       </CardFooter>
+
+      {/* Take exam confirmation dialog */}
+      <TakeExamDialog
+        isOpen={takeExamDialogOpen}
+        exam={exam}
+        onClose={() => setTakeExamDialogOpen(false)}
+        onProceed={handleProceedToExam}
+      />
     </Card>
   );
 }

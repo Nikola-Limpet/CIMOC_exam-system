@@ -118,12 +118,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
           >
             <Link href="/dashboard">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <Button
+                variant="secondary"
+                className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+              >
                 {!sidebarCollapsed && 'Exam System'}
-              </h1>
+              </Button>
             </Link>
           </div>
-          <Separator className="my-6" />
+          <Separator variant="dashed" className="my-6" />
           <div className="flex-1 space-y-6 px-2">
             {navItems
               .filter(item => !item.adminOnly || isAdmin)
@@ -190,7 +193,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile sidebar */}
       <div
-        className={`fixed inset-0 z-50 bg-black/80 md:hidden ${sidebarOpen ? 'block' : 'hidden'}`}
+        className={`fixed inset-0 z-50 bg-slate-500/35 md:hidden ${
+          sidebarOpen ? 'block' : 'hidden'
+        }`}
         onClick={() => setSidebarOpen(false)}
       />
 

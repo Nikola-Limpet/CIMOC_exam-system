@@ -48,13 +48,6 @@ export function DashboardContent() {
 
       <div className="flex flex-col justify-between space-y-2 md:flex-row md:items-center md:space-y-0">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        {isAdmin && (
-          <div className="flex gap-2">
-            <Button asChild variant="gradient">
-              <Link href="/exams/new">Create New Exam</Link>
-            </Button>
-          </div>
-        )}
       </div>
 
       {/* Dashboard cards */}

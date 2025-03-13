@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden',
   {
     variants: {
       variant: {
@@ -15,16 +15,21 @@ const buttonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
-        // Custom variants
+        // Enhanced variants for math competition
         gradient:
-          'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700',
-        exam: 'bg-emerald-600 text-white hover:bg-emerald-700 font-semibold',
+          'bg-gradient-to-r from-primary to-chart-5 text-white hover:from-primary/90 hover:to-chart-5/90 shadow-sm',
+        exam: 'bg-chart-3 text-white hover:bg-chart-3/90 font-semibold shadow-sm',
+        formula:
+          'bg-chart-1 text-white hover:bg-chart-1/90 font-mono font-medium border-b-2 border-chart-2',
+        calculator: 'bg-card border border-input hover:bg-muted font-mono shadow-sm',
+        timer: 'bg-card border-2 border-chart-2 text-foreground font-mono font-bold shadow-sm',
       },
       size: {
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
+        square: 'h-10 w-10 font-mono text-lg',
       },
     },
     defaultVariants: {
@@ -44,7 +49,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+      <Comp
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          variant === 'gradient' && 'group',
+          variant === 'timer' && 'pulse-subtle'
+        )}
+        ref={ref}
+        {...props}
+      />
     );
   }
 );

@@ -47,74 +47,125 @@
 
 @layer base {
   :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
+    /* Light Mode - Math Competition Theme with Rich Colors */
+    --background: oklch(0.99 0.01 250);
+    --foreground: oklch(0.15 0.05 265);
+    
+    /* Enhanced gradient variables */
+    --gradient-background: linear-gradient(135deg, oklch(0.99 0.03 240), oklch(0.97 0.04 260));
+    --gradient-card: linear-gradient(to bottom right, oklch(1 0 0), oklch(0.97 0.03 250));
+    --gradient-accent: linear-gradient(to right, oklch(0.88 0.15 60), oklch(0.80 0.20 40));
+    --gradient-primary: linear-gradient(to right, oklch(0.45 0.22 260), oklch(0.48 0.25 240));
+    
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.141 0.005 285.823);
+    --card-foreground: oklch(0.15 0.05 260);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.21 0.006 285.885);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.967 0.001 286.375);
-    --muted-foreground: oklch(0.552 0.016 285.938);
-    --accent: oklch(0.967 0.001 286.375);
-    --accent-foreground: oklch(0.21 0.006 285.885);
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.577 0.245 27.325);
-    --border: oklch(0.92 0.004 286.32);
-    --input: oklch(0.92 0.004 286.32);
-    --ring: oklch(0.705 0.015 286.067);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.141 0.005 285.823);
-    --sidebar-primary: oklch(0.21 0.006 285.885);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.967 0.001 286.375);
-    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-    --sidebar-border: oklch(0.92 0.004 286.32);
-    --sidebar-ring: oklch(0.705 0.015 286.067);
+    --popover-foreground: oklch(0.15 0.05 260);
+
+
+
+    --bg-primary: oklch(0.45 0.22 260);
+    
+    /* Primary: Richer blue for math theme */
+    --primary: oklch(0.45 0.22 260);
+    --primary-foreground: oklch(0.99 0 0);
+    
+    /* Secondary: More vibrant complementary color */
+    --secondary: oklch(0.94 0.05 260);
+    --secondary-foreground: oklch(0.30 0.18 260);
+    
+    /* Muted: Soft background for less important elements */
+    --muted: oklch(0.96 0.03 260);
+    --muted-foreground: oklch(0.50 0.10 260);
+    
+    /* Accent: Richer orange to complement the blues */
+    --accent: oklch(0.85 0.18 60);
+    --accent-foreground: oklch(0.15 0.05 60);
+    
+    /* Destructive: Clearer red for errors/warnings */
+    --destructive: oklch(0.65 0.28 25);
+    --destructive-foreground: oklch(0.99 0 0);
+    
+    --border: oklch(0.88 0.05 260);
+    --input: oklch(0.88 0.05 260);
+    --ring: oklch(0.55 0.15 260);
+    
+    /* Enhanced chart colors - mathematical theme inspired */
+    --chart-1: oklch(0.60 0.28 260); /* rich blue */
+    --chart-2: oklch(0.68 0.25 30);  /* rich orange */
+    --chart-3: oklch(0.58 0.22 140); /* rich green */
+    --chart-4: oklch(0.52 0.26 320); /* rich purple */
+    --chart-5: oklch(0.65 0.28 200); /* rich teal */
+    
+    --radius: 0.5rem;
+    
+    /* Sidebar specific - richer colors */
+    --sidebar: oklch(0.97 0.03 260);
+    --sidebar-foreground: oklch(0.15 0.05 265);
+    --sidebar-primary: oklch(0.48 0.22 260);
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.85 0.18 60);
+    --sidebar-accent-foreground: oklch(0.15 0.05 60);
+    --sidebar-border: oklch(0.88 0.05 260);
+    --sidebar-ring: oklch(0.55 0.15 260);
   }
 
   .dark {
-    --background: oklch(0.141 0.005 285.823);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.141 0.005 285.823);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.141 0.005 285.823);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.21 0.006 285.885);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.274 0.006 286.033);
-    --muted-foreground: oklch(0.705 0.015 286.067);
-    --accent: oklch(0.274 0.006 286.033);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
-    --destructive-foreground: oklch(0.637 0.237 25.331);
-    --border: oklch(0.274 0.006 286.033);
-    --input: oklch(0.274 0.006 286.033);
-    --ring: oklch(0.442 0.017 285.786);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.21 0.006 285.885);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.274 0.006 286.033);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(0.274 0.006 286.033);
-    --sidebar-ring: oklch(0.442 0.017 285.786);
+    /* Dark Mode - Lighter & Richer Math Competition Theme */
+    --background: #191919;
+    --foreground: oklch(0.97 0.03 260);
+    
+    /* Enhanced dark gradient variables - lighter and more vibrant */
+    --gradient-background: linear-gradient(135deg, #1a1a24, #232336);
+    --gradient-card: linear-gradient(to bottom right, #25253a, #2c2c42);
+    --gradient-accent: linear-gradient(to right, oklch(0.78 0.22 50), oklch(0.70 0.25 30));
+    --gradient-primary: linear-gradient(to right, oklch(0.70 0.25 250), oklch(0.65 0.28 230));
+    
+    --card: #25253a;
+    --card-foreground: oklch(0.97 0.03 260);
+    --popover: #25253a;
+    --popover-foreground: oklch(0.97 0.03 260);
+    
+    /* Primary: Brighter blue for visibility */
+    --primary: oklch(0.70 0.25 250);
+    --primary-foreground: oklch(0.98 0.01 260);
+    
+    /* Secondary: Lighter complementary color */
+    --secondary: oklch(0.30 0.08 260);
+    --secondary-foreground: oklch(0.92 0.05 260);
+    
+    /* Muted: Lighter subdued background */
+    --muted: #2d2d3d;
+    --muted-foreground: oklch(0.75 0.07 260);
+    
+    /* Accent: Brighter orange for better contrast */
+    --accent: oklch(0.75 0.22 50);
+    --accent-foreground: oklch(0.98 0.01 260);
+    
+    /* Destructive: Warning red - slightly brighter */
+    --destructive: oklch(0.68 0.30 25);
+    --destructive-foreground: oklch(0.98 0.01 260);
+    
+    --border: #3a3a4a;
+    --input: #3a3a4a;
+    --ring: oklch(0.50 0.18 260);
+    
+    /* Enhanced chart colors for dark mode - brighter */
+    --chart-1: oklch(0.70 0.28 250); /* vibrant blue */
+    --chart-2: oklch(0.75 0.25 30);  /* vibrant orange */
+    --chart-3: oklch(0.65 0.24 140); /* vibrant green */
+    --chart-4: oklch(0.62 0.28 320); /* vibrant purple */
+    --chart-5: oklch(0.68 0.26 200); /* vibrant teal */
+    
+    /* Enhanced sidebar specific - lighter */
+    --sidebar: #20202e;
+    --sidebar-foreground: oklch(0.97 0.03 260);
+    --sidebar-primary: oklch(0.70 0.25 250);
+    --sidebar-primary-foreground: oklch(0.98 0.01 260);
+    --sidebar-accent: oklch(0.75 0.22 50);
+    --sidebar-accent-foreground: oklch(0.98 0.01 260);
+    --sidebar-border: oklch(0.30 0.06 260);
+    --sidebar-ring: oklch(0.50 0.18 260);
   }
   
   * {
@@ -123,5 +174,687 @@
 
   body {
     @apply bg-background text-foreground;
+    background-image: var(--gradient-background);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50L40 40 M50 50L60 40 M50 50L40 60 M50 50L60 60' stroke='%239C92AC' stroke-width='0.5' fill='none' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    z-index: -1;
+  }
+}
+
+/* Enhanced math competition style components */
+@layer components {
+  .math-logo {
+    @apply font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight;
+    background: linear-gradient(
+      to right,
+      oklch(0.45 0.22 260),
+      oklch(0.58 0.25 200)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    text-shadow: 0 2px 6px oklch(0.45 0.22 260 / 0.3);
+    margin-bottom: 0.5rem;
+  }
+
+  .math-header {
+    background-image: linear-gradient(to right, var(--primary), oklch(0.5 0.22 240));
+    padding: 1.75rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid oklch(var(--primary) / 0.3);
+  }
+  
+  .math-header::before {
+    content: "∫ ∑ π";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.75rem;
+    opacity: 0.2;
+    font-family: var(--font-mono);
+    color: white;
+    letter-spacing: 0.6rem;
+  }
+
+  .math-logo::after {
+    content: "∑";
+    @apply absolute -right-6 -top-8 text-4xl md:text-5xl lg:text-6xl;
+    color: oklch(0.75 0.22 30); /* Orange sigma symbol */
+    transform: rotate(15deg);
+    animation: pulse 3s infinite alternate;
+    opacity: 0.8;
+  }
+
+  .math-logo span {
+    @apply block text-2xl md:text-3xl lg:text-4xl font-mono;
+    color: oklch(0.5 0.12 260);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .math-logo {
+    background: linear-gradient(
+      to right,
+      oklch(0.70 0.25 250),
+      oklch(0.65 0.28 140)
+    );
+    text-shadow: 0 3px 8px oklch(0.70 0.25 250 / 0.4);
+  }
+
+  .dark .math-logo::after {
+    color: oklch(0.75 0.22 50);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark .math-logo span {
+    color: oklch(0.75 0.08 260);
+  }
+  
+  /* Timer style for exams */
+  .exam-timer {
+    @apply font-mono text-lg font-bold px-4 py-2 rounded-lg;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    color: white;
+    animation: pulse-subtle 2s infinite alternate;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Formula display for math content */
+  .math-formula {
+    @apply p-4 my-3 rounded-md border border-border;
+    background: linear-gradient(to right, oklch(0.94 0.05 260 / 0.6), oklch(0.96 0.04 270 / 0.6));
+    font-family: var(--font-mono);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Question card styling */
+  .question-card {
+    @apply p-5 rounded-lg border border-border transition-all duration-300;
+    background-image: var(--gradient-card);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+  }
+  
+  .question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .math-formula {
+    background: linear-gradient(to right, oklch(0.22 0.05 260 / 0.6), oklch(0.26 0.06 270 / 0.6));
+    border-color: oklch(0.35 0.08 260);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Math subject badges */
+  .math-badge {
+    @apply rounded-full px-3 py-1 text-xs font-medium;
+    background-image: linear-gradient(to right, var(--primary), oklch(0.5 0.2 240));
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .math-badge.algebra {
+    background-image: linear-gradient(to right, oklch(0.60 0.28 260), oklch(0.52 0.26 250));
+  }
+
+  .math-badge.geometry {
+    background-image: linear-gradient(to right, oklch(0.58 0.22 140), oklch(0.55 0.24 150));
+  }
+
+  .math-badge.calculus {
+    background-image: linear-gradient(to right, oklch(0.68 0.25 30), oklch(0.65 0.27 40));
+  }
+
+  .math-badge.statistics {
+    background-image: linear-gradient(to right, oklch(0.52 0.26 320), oklch(0.48 0.28 310));
+  }
+
+  /* Button enhancements */
+  .btn-primary {
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-200;
+    background-image: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 10px oklch(var(--primary) / 0.3);
+    border: 1px solid oklch(var(--primary) / 0.2);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 14px oklch(var(--primary) / 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-accent {
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-200;
+    background-image: var(--gradient-accent);
+    color: white;
+    box-shadow: 0 4px 10px oklch(var(--accent) / 0.3);
+    border: 1px solid oklch(var(--accent) / 0.2);
+  }
+
+  .btn-accent:hover {
+    box-shadow: 0 6px 14px oklch(var(--accent) / 0.4);
+    transform: translateY(-1px);
+  }
+  
+  /* Animations */
+  @keyframes pulse {
+    0% { opacity: 0.7; transform: rotate(15deg) scale(1); }
+    100% { opacity: 1; transform: rotate(15deg) scale(1.15); }
+  }
+  
+  @keyframes pulse-subtle {
+    0% { opacity: 0.85; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+  }
+
+  /* Additional dark mode enhancements */
+  .dark .question-card {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .dark .question-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 1px rgba(255, 255, 255, 0.15);
+  }
+
+  .dark .btn-primary {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+  }
+
+  .dark .btn-accent {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .btn-accent:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+  }
+
+  .dark .math-badge {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* New math decorative elements for dark mode */
+  .dark .math-decoration {
+    color: oklch(0.60 0.15 260 / 0.15);
+    text-shadow: 0 0 10px oklch(0.70 0.25 250 / 0.2);
+  }
+
+  /* Dashboard specific components */
+  .dashboard-container {
+    @apply p-6 md:p-8 max-w-[1400px] mx-auto;
+  }
+  
+  .dashboard-header {
+    @apply mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4;
+    background: linear-gradient(to right, transparent, var(--muted)/30, transparent);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .dashboard-title {
+    @apply text-2xl md:text-3xl font-bold;
+    background: linear-gradient(
+      to right,
+      oklch(0.45 0.22 260),
+      oklch(0.60 0.24 240)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+  }
+  
+  .dashboard-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+  }
+  
+  .stats-card {
+    @apply p-4 md:p-5 rounded-lg border border-border flex flex-col gap-2 transition-all duration-300;
+    background-image: var(--gradient-card);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .stats-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .stats-card-title {
+    @apply text-sm font-medium text-muted-foreground flex items-center gap-2;
+  }
+  
+  .stats-card-value {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+  
+  .stats-card-description {
+    @apply text-sm text-muted-foreground mt-1;
+  }
+  
+  .stats-card-footer {
+    @apply flex items-center justify-between mt-2 pt-2 text-sm;
+    border-top: 1px dashed var(--border);
+  }
+
+  .dashboard-section {
+    @apply mt-8 mb-6;
+  }
+  
+  .dashboard-section-header {
+    @apply flex items-center justify-between mb-4;
+  }
+  
+  .dashboard-section-title {
+    @apply text-xl font-semibold;
+    position: relative;
+  }
+  
+  .dashboard-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-image: linear-gradient(to right, var(--primary), var(--accent));
+    border-radius: 3px;
+  }
+  
+  .activity-card {
+    @apply p-4 rounded-lg border border-border transition-all duration-300 flex items-start gap-3;
+    background-image: var(--gradient-card);
+  }
+  
+  .activity-card-icon {
+    @apply p-2 rounded-md;
+    background: linear-gradient(to bottom right, var(--primary)/10, var(--primary)/5);
+    border: 1px solid var(--primary)/20;
+  }
+  
+  .activity-card-content {
+    @apply flex-grow;
+  }
+  
+  .activity-card-title {
+    @apply font-medium mb-1;
+  }
+  
+  .activity-card-time {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Charts and data visualization */
+  .chart-container {
+    @apply rounded-lg border border-border overflow-hidden p-4 bg-card;
+  }
+  
+  .chart-header {
+    @apply flex items-center justify-between mb-3;
+  }
+  
+  .chart-title {
+    @apply font-medium;
+  }
+  
+  /* Quiz and exam cards */
+  .exam-card {
+    @apply p-4 rounded-lg border border-border transition-all duration-300;
+    background-image: var(--gradient-card);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .exam-card::before {
+    content: "∑";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 5rem;
+    opacity: 0.03;
+    font-family: var(--font-mono);
+    transform: rotate(15deg);
+  }
+  
+  .exam-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .exam-card-header {
+    @apply flex justify-between items-start mb-2;
+  }
+  
+  .exam-card-title {
+    @apply font-medium mb-1;
+  }
+  
+  .exam-card-subject {
+    @apply text-xs text-muted-foreground;
+  }
+  
+  .exam-card-stats {
+    @apply flex items-center gap-3 mt-3 text-sm;
+  }
+  
+  .exam-card-stat {
+    @apply flex items-center gap-1 text-muted-foreground;
+  }
+  
+  .exam-card-footer {
+    @apply flex justify-between items-center mt-3 pt-3;
+    border-top: 1px dashed var(--border);
+  }
+  
+  /* Dark mode dashboard enhancements */
+  .dark .dashboard-title {
+    background: linear-gradient(
+      to right,
+      oklch(0.70 0.25 250), 
+      oklch(0.65 0.28 230)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .dark .stats-card {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .stats-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  .dark .activity-card {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .dark .activity-card-icon {
+    background: linear-gradient(to bottom right, var(--primary)/20, var(--primary)/10);
+    border: 1px solid var(--primary)/30;
+  }
+  
+  .dark .exam-card {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .exam-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Enhanced Layout Components */
+  .math-layout {
+    @apply max-w-[1400px] mx-auto px-4 md:px-6;
+    display: grid;
+    grid-template-columns: 1fr min(1200px, 100%) 1fr;
+  }
+
+  .math-layout > * {
+    grid-column: 2;
+  }
+
+  .math-layout-full {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  /* Improved Section Headers with Math Elements */
+  .section-header {
+    @apply relative mb-8 pb-2;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, transparent, var(--border), transparent);
+    border-image-slice: 1;
+  }
+
+  .section-header-title {
+    @apply text-2xl font-bold mb-1 flex items-center gap-2;
+    background: linear-gradient(to right, var(--primary), oklch(0.55 0.20 250));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-header-subtitle {
+    @apply text-muted-foreground text-sm;
+  }
+
+  .section-header-math {
+    @apply absolute -right-2 top-0 opacity-10 rotate-12 text-4xl font-mono;
+  }
+
+  /* Math decorated cards and containers */
+  .math-decorated-card {
+    @apply relative overflow-hidden rounded-lg border border-border p-4 md:p-6;
+    background-image: var(--gradient-card);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .math-decorated-card::before {
+    content: "∑";
+    @apply absolute opacity-[0.03] -right-4 -bottom-4 text-[100px] font-mono rotate-12;
+  }
+
+  .math-decorated-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  /* Enhanced dividers with animation */
+  .divider-animated {
+    @apply h-px w-full my-6 relative overflow-hidden;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  .divider-animated::after {
+    content: "";
+    @apply absolute top-0 left-0 h-full bg-primary/40;
+    width: 30%;
+    animation: divider-glide 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes divider-glide {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(300%); }
+  }
+
+  /* Grid Systems for Dashboard */
+  .dashboard-auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .dashboard-flex-section {
+    @apply flex flex-col md:flex-row gap-6 mb-8;
+  }
+
+  .dashboard-flex-section-main {
+    @apply flex-1 min-w-0;
+  }
+
+  .dashboard-flex-section-side {
+    @apply w-full md:w-80 shrink-0;
+  }
+
+  /* Improved stats cards with transitions */
+  .stats-card {
+    @apply p-4 md:p-5 rounded-lg border border-border flex flex-col gap-2 transition-all duration-300;
+    background-image: var(--gradient-card);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stats-card::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--primary)/0.05, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  .stats-card:hover::after {
+    opacity: 1;
+  }
+  
+  .stats-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  /* Enhanced dashboard section styling */
+  .dashboard-section {
+    @apply mt-10 mb-12;
+  }
+  
+  .dashboard-section-header {
+    @apply flex flex-col sm:flex-row sm:items-center justify-between mb-6;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+    position: relative;
+  }
+  
+  .dashboard-section-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary), var(--primary)/0.3);
+    border-radius: 3px;
+  }
+  
+  .dashboard-section-title {
+    @apply text-xl font-semibold flex items-center gap-2;
+    position: relative;
+  }
+  
+  .dashboard-section-title svg {
+    @apply text-primary;
+  }
+
+  /* Charts and data visualization improvements */
+  .chart-container {
+    @apply rounded-lg border border-border overflow-hidden p-4 bg-card;
+    position: relative;
+  }
+  
+  .chart-header {
+    @apply flex items-center justify-between mb-4;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  
+  .chart-title {
+    @apply font-medium flex items-center gap-2;
+  }
+  
+  .chart-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom right, var(--primary)/0.03, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Dark mode enhancements */
+  .dark .section-header {
+    border-image: linear-gradient(to right, transparent, var(--border), transparent);
+    border-image-slice: 1;
+  }
+  
+  .dark .section-header-title {
+    background: linear-gradient(to right, var(--primary), oklch(0.65 0.25 230));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .dark .math-decorated-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .dark .math-decorated-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  
+  .dark .divider-animated {
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+  
+  .dark .divider-animated::after {
+    background-color: var(--primary)/50;
+  }
+  
+  .dark .dashboard-section-header::after {
+    background: linear-gradient(to right, var(--primary), var(--primary)/0.2);
+  }
+  
+  /* Pulsating effect on featured items */
+  .math-feature-item {
+    @apply relative;
+  }
+  
+  .math-feature-item::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: inherit;
+    border: 2px solid var(--primary);
+    opacity: 0;
+    animation: pulse-border 2s infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes pulse-border {
+    0%, 100% { opacity: 0; transform: scale(0.95); }
+    50% { opacity: 0.3; transform: scale(1.02); }
   }
 }

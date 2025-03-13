@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Exam } from '@/types/exam';
 import { getAvailabilityInfo, getStatusColor, getStatusIcon } from '@/lib/utils/exam-utils';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { TakeExamDialog } from './take-exam-dialog';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { isExamActive } from '@/lib/examUtils';
 
 interface ExamListItemProps {
   exam: Exam;
@@ -27,11 +30,25 @@ interface ExamListItemProps {
 export function ExamListItem({ exam, isAdmin, onAction, onDelete }: ExamListItemProps) {
   const router = useRouter();
   const availability = getAvailabilityInfo(exam.availableFrom, exam.availableTo);
+  const examActive = isExamActive(exam);
+  const [takeExamDialogOpen, setTakeExamDialogOpen] = useState(false);
+
+  const handleTakeExamClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    if (examActive) {
+      setTakeExamDialogOpen(true);
+    }
+  };
+
+  const handleProceedToExam = () => {
+    setTakeExamDialogOpen(false);
+    router.push(`/exams/${exam.id}/take`);
+  };
 
   return (
     <div
       className="p-4 flex items-center justify-between hover:bg-muted/50 cursor-pointer transition-colors"
-      onClick={() => onAction(exam)}
+      onClick={() => (isAdmin ? onAction(exam) : null)}
     >
       <div className="flex items-center gap-4">
         <div
@@ -99,6 +116,33 @@ export function ExamListItem({ exam, isAdmin, onAction, onDelete }: ExamListItem
           </div>
         )}
 
+        {/* Student View */}
+        {!isAdmin && (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={e => {
+                e.stopPropagation();
+                router.push(`/exams/${exam.id}/details`);
+              }}
+            >
+              View Details
+            </Button>
+
+            <Button
+              size="sm"
+              variant={examActive ? 'default' : 'outline'}
+              disabled={!examActive}
+              onClick={handleTakeExamClick}
+              className={cn(!examActive && 'opacity-50')}
+            >
+              {examActive ? 'Take Exam' : 'Not Available'}
+            </Button>
+          </div>
+        )}
+
+        {/* Admin dropdown remains the same */}
         {isAdmin && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
@@ -110,7 +154,7 @@ export function ExamListItem({ exam, isAdmin, onAction, onDelete }: ExamListItem
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation();
-                  router.push(`/exams/${exam.id}`);
+                  router.push(`/exams/${exam.id}/details`);
                 }}
               >
                 <Eye className="mr-2 h-4 w-4" />
@@ -140,6 +184,14 @@ export function ExamListItem({ exam, isAdmin, onAction, onDelete }: ExamListItem
           </DropdownMenu>
         )}
       </div>
+
+      {/* Take exam confirmation dialog */}
+      <TakeExamDialog
+        isOpen={takeExamDialogOpen}
+        exam={exam}
+        onClose={() => setTakeExamDialogOpen(false)}
+        onProceed={handleProceedToExam}
+      />
     </div>
   );
 }

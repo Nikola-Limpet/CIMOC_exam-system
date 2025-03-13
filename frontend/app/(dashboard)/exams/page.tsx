@@ -54,7 +54,7 @@ export default function ExamsPage() {
     isFetching: examsFetching,
     error,
   } = useQuery({
-    queryKey: ['exams', page, searchQuery],
+    queryKey: ['exams', page, searchQuery, isAdmin],
     queryFn: async () => {
       try {
         setIsSearching(true);
@@ -62,6 +62,9 @@ export default function ExamsPage() {
         params.append('page', page.toString());
         params.append('limit', '12');
         if (searchQuery) params.append('search', searchQuery);
+
+        // For students, only request published exams
+        if (!isAdmin) params.append('status', 'published');
 
         const { data } = await examsApi.getAll(params.toString());
         return data;
@@ -105,13 +108,8 @@ export default function ExamsPage() {
 
   // Navigate to exam details/access page
   const handleExamAction = (exam: Exam) => {
-    if (isAdmin) {
-      router.push(`/exams/${exam.id}`);
-    } else {
-      router.push(`/exams/${exam.id}/access`);
-    }
+    router.push(`/exams/${exam.id}/details`);
   };
-
   // Handle opening delete dialog
   const handleOpenDeleteDialog = (exam: Exam) => {
     setSelectedExam(exam);
@@ -122,8 +120,12 @@ export default function ExamsPage() {
   const isInitialLoading = examsLoading;
   const isRefetching = examsFetching && !examsLoading;
 
-  // Extract exams array directly since API returns the array
-  const exams = Array.isArray(examsData) ? examsData : [];
+  // Extract and filter exams
+  const exams = Array.isArray(examsData)
+    ? isAdmin
+      ? examsData // Admins see all exams returned by the API
+      : examsData.filter(exam => exam.status === 'published') // Extra client-side filter for students
+    : [];
   const totalPages = 1; // Assuming one page for now
 
   // Initial loading skeleton
